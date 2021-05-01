@@ -7,6 +7,8 @@ namespace WeatherFetch
 	{
 		static void Main(string[] args)
 		{
+			string apiKey = System.IO.File.ReadAllText("apikey.txt");
+
 			HttpWebRequest request = WebRequest.CreateHttp("http://api.weatherapi.com/v1/current.json?");
 		}
 	}
