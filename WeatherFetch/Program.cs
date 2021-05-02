@@ -12,18 +12,13 @@ namespace WeatherFetch
 		static void Main(string[] args)
 		{
 			BootstrapConfiguration();
+			
+			var cli = new WeatherFetchCli(
+				args,
+				new WeatherApi(Configuration[ApiKeySecretName])
+			);
 
-			var api = new WeatherApi(Configuration[ApiKeySecretName]);
-			var forecast = api.GetForecast("Zagreb", 3);
-
-			foreach (var forecastDay in forecast.Forecast.ForecastDays)
-			{
-				string str = $"{forecastDay.Date?.ToString("yyyy-MM-dd") ?? "unknown"}"
-					+ $" {forecastDay.Day.MinTemperatureC,4:0.0}°C -"
-					+ $" {forecastDay.Day.MaxTemperatureC,4:0.0}°C";
-
-				Console.WriteLine(str);
-			}
+			cli.Run();
 		}
 
 		private static void BootstrapConfiguration() =>
