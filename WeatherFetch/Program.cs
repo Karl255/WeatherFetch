@@ -1,8 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Net;
-using System.Text.Json;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using WeatherFetch.Api;
 
@@ -18,12 +14,16 @@ namespace WeatherFetch
 			BootstrapConfiguration();
 
 			var api = new WeatherApi(Configuration[ApiKeySecretName]);
-			string json = api.GetCurrentWeather("Zagreb");
+			var forecast = api.GetForecast("Zagreb", 3);
 
-			// cheap way of formatting the json
-			json = JsonSerializer.Serialize(JsonSerializer.Deserialize<JsonElement>(json), new JsonSerializerOptions { WriteIndented = true });
+			foreach (var forecastDay in forecast.Forecast.ForecastDays)
+			{
+				string str = $"{forecastDay.Date?.ToString("yyyy-MM-dd") ?? "unknown"}"
+					+ $" {forecastDay.Day.MinTemperatureC,4:0.0}°C -"
+					+ $" {forecastDay.Day.MaxTemperatureC,4:0.0}°C";
 
-			Console.WriteLine(json);
+				Console.WriteLine(str);
+			}
 		}
 
 		private static void BootstrapConfiguration() =>
