@@ -31,6 +31,7 @@ namespace WeatherFetch
 			{
 				"current" => CurrentWeatherCommand(),
 				"forecast" => ForecastCommand(),
+				"icons" => AllIconsCommand(),
 				"help" or "-help" or "--help" => HelpCommand(),
 				_ => InvalidCommand()
 			};
@@ -46,6 +47,7 @@ namespace WeatherFetch
 			Console.WriteLine($"[{current.Location.LocalTime.ToString("HH:mm")}] Current weather for {current.Location.Name}, {current.Location.Region}, {current.Location.Country}");
 			Console.WriteLine();
 
+			Console.WriteLine(current.Current.Condition.Text);
 			Console.WriteLine($"Temperature: {current.Current.TemperatureC}°C");
 			Console.WriteLine($"Precipitation: {current.Current.PrecipitationMm} mm");
 			Console.WriteLine($"Wind speed: {current.Current.WindSpeedKmh} km/s {current.Current.WindDirection}");
@@ -57,6 +59,17 @@ namespace WeatherFetch
 		{
 			var options = ParseOptions(3);
 
+
+			return 0;
+		}
+
+		private int AllIconsCommand()
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				DrawIcon(1000 + 3 * i, true);
+				DrawIcon(1000 + 3 * i, false);
+			}
 
 			return 0;
 		}
@@ -109,6 +122,27 @@ namespace WeatherFetch
 			}
 
 			return options;
+		}
+
+		private void DrawIcon(int iconId, bool isDay)
+		{
+			if (!TextIcons.IconList.ContainsKey((iconId, isDay)))
+				throw new ArgumentException($"Invalid value for {nameof(iconId)}: {iconId}", nameof(iconId));
+
+			var initialPosition = Console.GetCursorPosition();
+			string[] icon = TextIcons.IconList[(iconId, isDay)] ?? TextIcons.Sunny;
+
+			for (int i = 0; i < icon.Length; i++)
+			{
+				Console.SetCursorPosition(initialPosition.Left, Math.Min(initialPosition.Top + i, Console.BufferHeight - 1));
+				Console.WriteLine(icon[i]);
+				Console.Write(' ');
+				int bh = Console.BufferHeight;
+				int wh = Console.WindowHeight;
+				int mwh = Console.LargestWindowHeight;
+			}
+
+			Console.SetCursorPosition(initialPosition.Left, Math.Min(initialPosition.Top + icon.Length, Console.BufferHeight - 1));
 		}
 	}
 }
