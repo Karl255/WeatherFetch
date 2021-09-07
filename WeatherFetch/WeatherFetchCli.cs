@@ -15,13 +15,24 @@ namespace WeatherFetch
 			if (args.Length < 1)
 				return HelpCommand();
 
-			return args[0] switch
+			try
 			{
-				"help" or "-h" or "-help" or "--help" => HelpCommand(),
-				"current" => CurrentWeatherCommand(args),
-				"forecast" => ForecastCommand(args),
-				_ => InvalidCommand(args)
-			};
+				return args[0] switch
+				{
+					"help" or "-h" or "-help" or "--help" => HelpCommand(),
+					"current" => CurrentWeatherCommand(args),
+					"forecast" => ForecastCommand(args),
+					_ => InvalidCommand(args)
+				};
+			}
+			catch (WeatherApiErrorException ex)
+			{
+				return $"API error {ex.ErrorCode}: {ex.Message}";
+			}
+			catch (Exception ex)
+			{
+				return $"Error: {ex.Message}";
+			}
 		}
 
 		private string CurrentWeatherCommand(string[] args)

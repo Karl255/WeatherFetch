@@ -37,7 +37,10 @@ namespace WeatherFetch.Api
 
 			HttpWebRequest request = WebRequest.CreateHttp(sb.ToString());
 
-			using var response = request.GetResponse();
+			WebResponse response;
+			try { response = request.GetResponse(); }
+			catch (WebException ex) { response = ex.Response; }
+
 			using var stream = response.GetResponseStream();
 			using var reader = new StreamReader(stream);
 
@@ -46,6 +49,7 @@ namespace WeatherFetch.Api
 			if (json.StartsWith(@"{""error"":{"))
 				throw new WeatherApiErrorException(json);
 
+			response.Dispose();
 			return json;
 		}
 
