@@ -7,7 +7,7 @@ using WeatherFetch.Api.Data;
 
 namespace WeatherFetch.Api
 {
-	public sealed class WeatherApi : IWeatherApi
+	public sealed class WeatherApi
 	{
 		private const string BaseUrl = "https://api.weatherapi.com/v1/";
 
@@ -53,12 +53,13 @@ namespace WeatherFetch.Api
 			return json;
 		}
 
-		public CurrentWeatherRoot GetCurrentWeather(string location, bool includeAirQuality = false)
+		public CurrentWeatherRoot GetCurrentWeather(string location, bool includeAirQuality = false, bool includeAlerts = false)
 		{
 			string json = ApiFetch(
 				ApiMethod.CurrentWeather,
 				("q", location),
-				("aqi", includeAirQuality ? "yes" : "no")
+				("aqi", includeAirQuality ? "yes" : "no"),
+				("alerts", includeAlerts ? "yes" : "no")
 			);
 
 			return JsonSerializer.Deserialize<CurrentWeatherRoot>(json, CustomJsonSerializerOptions);
@@ -76,6 +77,29 @@ namespace WeatherFetch.Api
 				("aqi", includeAirQuality ? "yes" : "no"),
 				("alerts", includeAlerts ? "yes" : "no")
 			);
+
+			return JsonSerializer.Deserialize<ForecastRoot>(json, CustomJsonSerializerOptions);
+		}
+
+		public ForecastRoot GetHistory(string location, string date, string endDate = null, bool includeAirQuality = false, bool includeAlerts = false)
+		{
+			if (includeAlerts)
+				throw new NotImplementedException("GetForecast: Alerts are not supported yet.");
+
+			string json = endDate is null
+				? ApiFetch(
+					ApiMethod.Histroy,
+					("q", location),
+					("dt", date),
+					("aqi", includeAirQuality ? "yes" : "no"),
+					("alerts", includeAlerts ? "yes" : "no"))
+				: ApiFetch(
+					ApiMethod.Histroy,
+					("q", location),
+					("dt", date),
+					("end_dt", endDate),
+					("aqi", includeAirQuality ? "yes" : "no"),
+					("alerts", includeAlerts ? "yes" : "no"));
 
 			return JsonSerializer.Deserialize<ForecastRoot>(json, CustomJsonSerializerOptions);
 		}
