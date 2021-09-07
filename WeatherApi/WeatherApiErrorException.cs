@@ -6,10 +6,10 @@ namespace WeatherFetch.Api
 {
 	public class WeatherApiErrorException : Exception
 	{
-		private string _message;
+		private readonly string _message;
 		public override string Message => _message;
-		
-		private int _errorCode;
+
+		private readonly int _errorCode;
 		public int ErrorCode => _errorCode;
 
 		public WeatherApiErrorException(string json)

@@ -12,15 +12,12 @@ namespace WeatherFetch.Api
 		private const string BaseUrl = "https://api.weatherapi.com/v1/";
 
 		private string ApiKey { get; init; }
-		private JsonSerializerOptions CustomJsonSerializerOptions = new()
+		private JsonSerializerOptions CustomJsonSerializerOptions { get; init; } = new()
 		{
 			Converters = { new SmartBoolJsonConverter() }
 		};
 
-		public WeatherApi(string apiKey)
-		{
-			ApiKey = apiKey;
-		}
+		public WeatherApi(string apiKey) => ApiKey = apiKey;
 
 		/// <summary>
 		/// Base utility method for making API calls.
@@ -36,7 +33,7 @@ namespace WeatherFetch.Api
 				sb.Append('&')
 					.Append(key)
 					.Append('=')
-					.Append(System.Uri.EscapeDataString(value));
+					.Append(Uri.EscapeDataString(value));
 
 			HttpWebRequest request = WebRequest.CreateHttp(sb.ToString());
 

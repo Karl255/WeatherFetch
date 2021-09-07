@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using WeatherFetch.Api;
 
 namespace WeatherFetch
@@ -12,13 +11,12 @@ namespace WeatherFetch
 		static void Main(string[] args)
 		{
 			BootstrapConfiguration();
-			
+
 			var cli = new WeatherFetchCli(
-				args,
 				new WeatherApi(Configuration[ApiKeySecretName])
 			);
 
-			cli.Run();
+			System.Console.WriteLine(cli.Run(args));
 		}
 
 		private static void BootstrapConfiguration() =>
