@@ -23,6 +23,6 @@ namespace WeatherFetch.Api.Data
 		public Astro? Astro { get; set; }
 
 		[JsonPropertyName("hour")]
-		public ImmutableArray<Hour>? Hours { get; set; }
+		public Hour[]? Hours { get; set; }
 	}
 }

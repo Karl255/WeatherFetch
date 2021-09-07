@@ -85,13 +85,13 @@ namespace WeatherFetch.Api.Data
 		public int? WillItRain { get; set; }
 		
 		[JsonPropertyName("chance_of_rain")]
-		public string? ChanceOfRain { get; set; }
+		public int? ChanceOfRain { get; set; }
 		
 		[JsonPropertyName("will_it_snow")]
 		public int? WillItSnow { get; set; }
 		
 		[JsonPropertyName("chance_of_snow")]
-		public string? ChanceOfSnow { get; set; }
+		public int? ChanceOfSnow { get; set; }
 		
 		[JsonPropertyName("vis_km")]
 		public double? VisibilityKm { get; set; }

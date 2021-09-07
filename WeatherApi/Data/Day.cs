@@ -49,13 +49,13 @@ namespace WeatherFetch.Api.Data
 		public bool? WillItRain { get; set; }
 		
 		[JsonPropertyName("daily_chance_of_rain")]
-		public string? ChanceOfRain { get; set; }
+		public int? ChanceOfRain { get; set; }
 		
 		[JsonPropertyName("daily_will_it_snow")]
 		public bool? WillItSnow { get; set; }
 		
 		[JsonPropertyName("daily_chance_of_snow")]
-		public string? ChanceOfSnow { get; set; }
+		public int? ChanceOfSnow { get; set; }
 		
 		[JsonPropertyName("condition")]
 		public Condition? Condition { get; set; }
