@@ -53,14 +53,12 @@ namespace WeatherFetch.Api
 			return json;
 		}
 
-		public CurrentWeatherRoot GetCurrentWeather(string location, bool includeAirQuality = false, bool includeAlerts = false)
+		public CurrentWeatherRoot GetCurrentWeather(string location, bool includeAirQuality = false)
 		{
 			string json = ApiFetch(
 				ApiMethod.CurrentWeather,
 				("q", location),
-				("aqi", includeAirQuality ? "yes" : "no"),
-				("alerts", includeAlerts ? "yes" : "no")
-			);
+				("aqi", includeAirQuality ? "yes" : "no"));
 
 			return JsonSerializer.Deserialize<CurrentWeatherRoot>(json, CustomJsonSerializerOptions);
 		}
@@ -75,8 +73,7 @@ namespace WeatherFetch.Api
 				("q", location),
 				("days", days.ToString()),
 				("aqi", includeAirQuality ? "yes" : "no"),
-				("alerts", includeAlerts ? "yes" : "no")
-			);
+				("alerts", includeAlerts ? "yes" : "no"));
 
 			return JsonSerializer.Deserialize<ForecastRoot>(json, CustomJsonSerializerOptions);
 		}

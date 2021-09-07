@@ -46,8 +46,7 @@ namespace WeatherFetch
 			var options = ParseOptions(args, 2);
 			var current = Api.GetCurrentWeather(
 				args[1], // location
-				options.ContainsKey(IncludeAirQualityOption),
-				options.ContainsKey(IncludeAlertsOption));
+				options.ContainsKey(IncludeAirQualityOption));
 
 			return
 				  $"[{current.Location.LocalTime:HH:mm}] Current weather for {current.Location.Name}, {current.Location.Region}, {current.Location.Country}\n"
