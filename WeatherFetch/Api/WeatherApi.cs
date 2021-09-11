@@ -17,7 +17,7 @@ namespace WeatherFetch.Api
 			Converters = { new SmartBoolJsonConverter() }
 		};
 
-		public WeatherApi(string apiKey) => ApiKey = apiKey;
+		public WeatherApi(Config config) => ApiKey = config.WApiKey ?? throw new UserException("Missing API key.");
 
 		/// <summary>
 		/// Base utility method for making API calls.

@@ -12,33 +12,27 @@ namespace WeatherFetch
 		const string IncludeAlertsOption = "--alerts";
 
 		private WeatherApi Api { get; init; }
+		private Config Config { get; set; }
 
-		public WeatherFetchCli(WeatherApi weatherApi) => Api = weatherApi;
+		public WeatherFetchCli(Config config)
+		{
+			Config = config;
+			Api = new WeatherApi(config);
+		}
 
 		public string Run(string[] args)
 		{
 			if (args.Length < 1)
 				return HelpCommand();
 
-			try
+			return args[0] switch
 			{
-				return args[0] switch
-				{
-					"help" or "-h" or "-help" or "--help" => HelpCommand(),
-					"current" => CurrentWeatherCommand(args),
-					"forecast" => ForecastCommand(args),
-					"date" => DateCommand(args),
-					_ => InvalidCommand(args)
-				};
-			}
-			catch (WeatherApiErrorException ex)
-			{
-				return $"{ex.Message} ({ex.ErrorCode})";
-			}
-			catch (UserException ex)
-			{
-				return $"Error: {ex.Message}";
-			}
+				"help" or "-h" or "-help" or "--help" => HelpCommand(),
+				"current" => CurrentWeatherCommand(args),
+				"forecast" => ForecastCommand(args),
+				"date" => DateCommand(args),
+				_ => InvalidCommand(args)
+			};
 		}
 
 		private string CurrentWeatherCommand(string[] args)

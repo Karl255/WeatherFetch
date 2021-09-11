@@ -1,27 +1,32 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
 using WeatherFetch.Api;
 
 namespace WeatherFetch
 {
 	class Program
 	{
-		private static IConfigurationRoot Configuration;
-		private const string ApiKeySecretName = "Weather:ApiKey";
-
 		static void Main(string[] args)
 		{
-			BootstrapConfiguration();
+			var config = Config.LoadConfig(Config.DefaultLocation);
 
-			var cli = new WeatherFetchCli(
-				new WeatherApi(Configuration[ApiKeySecretName])
-			);
+			WeatherFetchCli cli;
 
-			System.Console.WriteLine(cli.Run(args));
+			try
+			{
+				cli = new WeatherFetchCli(config);
+				Console.WriteLine(cli.Run(args));
+			}
+			catch (UserException ex)
+			{
+				Console.WriteLine($"Error: {ex.Message}");
+			}
+			catch (WeatherApiErrorException ex)
+			{
+				Console.WriteLine($"API error: {ex.Message} ({ex.ErrorCode})");
+			}
+
+			if (config.NeedsUpgrade)
+				config.StoreConfig(Config.DefaultLocation);
 		}
-
-		private static void BootstrapConfiguration() =>
-			Configuration = new ConfigurationBuilder()
-				.AddUserSecrets<Program>()
-				.Build();
 	}
 }
