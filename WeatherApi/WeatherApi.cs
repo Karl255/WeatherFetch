@@ -39,7 +39,7 @@ namespace WeatherFetch.Api
 
 			WebResponse response;
 			try { response = request.GetResponse(); }
-			catch (WebException ex) { response = ex.Response; }
+			catch (WebException ex) { response = ex.Response; } // 4xx responses still contain useful error info in form of json
 
 			using var stream = response.GetResponseStream();
 			using var reader = new StreamReader(stream);
@@ -65,9 +65,6 @@ namespace WeatherFetch.Api
 
 		public ForecastRoot GetForecast(string location, int days, bool includeAirQuality = false, bool includeAlerts = false)
 		{
-			if (includeAlerts)
-				throw new NotImplementedException("GetForecast: Alerts are not supported yet.");
-
 			string json = ApiFetch(
 				ApiMethod.Forecast,
 				("q", location),
@@ -80,9 +77,6 @@ namespace WeatherFetch.Api
 
 		public ForecastRoot GetHistory(string location, string date, string endDate = null, bool includeAirQuality = false, bool includeAlerts = false)
 		{
-			if (includeAlerts)
-				throw new NotImplementedException("GetForecast: Alerts are not supported yet.");
-
 			string json = endDate is null
 				? ApiFetch(
 					ApiMethod.Histroy,

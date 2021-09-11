@@ -27,7 +27,7 @@ namespace WeatherFetch
 					"help" or "-h" or "-help" or "--help" => HelpCommand(),
 					"current" => CurrentWeatherCommand(args),
 					"forecast" => ForecastCommand(args),
-					"date" => HistoryCommand(args),
+					"date" => DateCommand(args),
 					_ => InvalidCommand(args)
 				};
 			}
@@ -35,7 +35,7 @@ namespace WeatherFetch
 			{
 				return $"{ex.Message} ({ex.ErrorCode})";
 			}
-			catch (Exception ex)
+			catch (UserException ex)
 			{
 				return $"Error: {ex.Message}";
 			}
@@ -63,7 +63,7 @@ namespace WeatherFetch
 
 			bool isNumber = int.TryParse(args[2], out int days);
 			if (!isNumber || days < 1)
-				throw new Exception($"Invalid value for <days>: {args[2]}");
+				throw new UserException($"Invalid value for <days>: {args[2]}");
 
 			var forecast = Api.GetForecast(
 				args[1], // location
@@ -83,16 +83,19 @@ namespace WeatherFetch
 			return sb.ToString();
 		}
 		
-		private string HistoryCommand(string[] args)
+		private string DateCommand(string[] args)
 		{
+			if (args.Length < 3)
+				throw new UserException($"Not enough arguments ({args.Length}).");
+
 			var options = ParseOptions(args, 3);
 
 			if (!(Regex.IsMatch(args[2], @"\d{4}-\d{2}-\d{2}") && DateTime.TryParse(args[2], out _)))
-				throw new Exception($"Invalid value for <date>: {args[2]}");
+				throw new UserException($"Invalid value for <date>: {args[2]}");
 
 			bool hasEndDate = options.ContainsKey("-t");
 			if (hasEndDate && !(Regex.IsMatch(options["-t"], @"\d{4}-\d{2}-\d{2}") && DateTime.TryParse(options["-t"], out _)))
-				throw new Exception($"Invalid value for <end_date>: {args[2]}");
+				throw new UserException($"Invalid value for <end_date>: {args[2]}");
 
 			var history = Api.GetHistory(
 				args[1], // location
