@@ -7,7 +7,7 @@ using WeatherFetch.Api.Data;
 
 namespace WeatherFetch.Api
 {
-	public sealed class WeatherApi
+	public sealed class WeatherApi : IWeatherApi
 	{
 		private const string BaseUrl = "https://api.weatherapi.com/v1/";
 

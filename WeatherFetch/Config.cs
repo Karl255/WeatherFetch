@@ -40,11 +40,11 @@ namespace WeatherFetch
 		public void StoreConfig(string path)
 		{
 			PrepareForWrite();
-			string json = JsonSerializer.Serialize<Config>(this, new JsonSerializerOptions { WriteIndented = true });
+			string json = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
 			File.WriteAllText(path, json);
 		}
 
-		public WeatherApi GetWeatherApi() => new WeatherApi(this);
+		public IWeatherApi GetWeatherApi() => new WeatherApi(this);
 
 		// static
 
