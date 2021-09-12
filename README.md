@@ -1,14 +1,15 @@
 # WeatherFetch
 A simple project to get weather info.
+The weather API provider is [weatherapi.com](https://weatherapi.com). Support for multiple APIs is in progress.
 
-# The weather API provider and API key
-The weather API provider is [weatherapi.com](https://weatherapi.com). The API key is stored in the secrets file. Its location is:
-- on Linux: `~/.microsoft/usersecrets/48c46175-dc22-47b2-81f3-16413325acb5/secrets.json`
-- on Windows: `%appdata%\Microsoft\UserSecrets\48c46175-dc22-47b2-81f3-16413325acb5\secrets.json`
+# Config and API key
+The API key is stored in the config file at `~/.config/weatherfetch.config`. You need use your own API key, otherwise this tool won't work.
 
 The contents look like this:
 ```json
 {
-	"Weather:ApiKey": "api key here"
+  "wapi-key": "your API key here"
 }
 ```
+
+More features will be added to the config file in the future and new fields will be added automatically.
