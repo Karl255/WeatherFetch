@@ -9,12 +9,9 @@ namespace WeatherFetch
 		{
 			var config = Config.LoadConfig(Config.DefaultLocation);
 
-			WeatherFetchCli cli;
-
 			try
 			{
-				cli = new WeatherFetchCli(config);
-				Console.WriteLine(cli.Run(args));
+				Console.WriteLine(WeatherFetchCli.Run(args, config));
 			}
 			catch (UserException ex)
 			{

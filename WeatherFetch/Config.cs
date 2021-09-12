@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using WeatherFetch.Api;
 
 #nullable enable
 
@@ -42,6 +43,8 @@ namespace WeatherFetch
 			string json = JsonSerializer.Serialize<Config>(this, new JsonSerializerOptions { WriteIndented = true });
 			File.WriteAllText(path, json);
 		}
+
+		public WeatherApi GetWeatherApi() => new WeatherApi(this);
 
 		// static
 

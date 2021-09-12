@@ -6,21 +6,12 @@ using WeatherFetch.Api;
 
 namespace WeatherFetch
 {
-	public sealed class WeatherFetchCli
+	public static class WeatherFetchCli
 	{
 		const string IncludeAirQualityOption = "--aqi";
 		const string IncludeAlertsOption = "--alerts";
 
-		private WeatherApi Api { get; init; }
-		private Config Config { get; set; }
-
-		public WeatherFetchCli(Config config)
-		{
-			Config = config;
-			Api = new WeatherApi(config);
-		}
-
-		public string Run(string[] args)
+		public static string Run(string[] args, Config config)
 		{
 			if (args.Length < 1)
 				return HelpCommand();
@@ -28,17 +19,17 @@ namespace WeatherFetch
 			return args[0] switch
 			{
 				"help" or "-h" or "-help" or "--help" => HelpCommand(),
-				"current" => CurrentWeatherCommand(args),
-				"forecast" => ForecastCommand(args),
-				"date" => DateCommand(args),
+				"current" => CurrentWeatherCommand(args, config),
+				"forecast" => ForecastCommand(args, config),
+				"date" => DateCommand(args, config),
 				_ => InvalidCommand(args)
 			};
 		}
 
-		private string CurrentWeatherCommand(string[] args)
+		private static string CurrentWeatherCommand(string[] args, Config config)
 		{
 			var options = ParseOptions(args, 2);
-			var current = Api.GetCurrentWeather(
+			var current = config.GetWeatherApi().GetCurrentWeather(
 				args[1], // location
 				options.ContainsKey(IncludeAirQualityOption));
 
@@ -51,7 +42,7 @@ namespace WeatherFetch
 				+ $"Wind speed: {current.Current.WindSpeedKmh} km/s {current.Current.WindDirection}\n";
 		}
 
-		private string ForecastCommand(string[] args)
+		private static string ForecastCommand(string[] args, Config config)
 		{
 			var options = ParseOptions(args, 3);
 
@@ -59,7 +50,7 @@ namespace WeatherFetch
 			if (!isNumber || days < 1)
 				throw new UserException($"Invalid value for <days>: {args[2]}");
 
-			var forecast = Api.GetForecast(
+			var forecast = config.GetWeatherApi().GetForecast(
 				args[1], // location
 				days,
 				options.ContainsKey(IncludeAirQualityOption),
@@ -73,11 +64,12 @@ namespace WeatherFetch
 				sb.Append($"{day.Date:yyyy-MM-dd}  {day.Day.MaxTemperatureC:0.0}/{day.Day.MinTemperatureC:0.0}     {$"{day.Day.TotalPrecipitationMm} mm",-13}  {day.Day.MaxWindSpeedKmh} km/h\n");
 
 			// TODO: alerts
+			// UPDATE: or rather not
 
 			return sb.ToString();
 		}
 		
-		private string DateCommand(string[] args)
+		private static string DateCommand(string[] args, Config config)
 		{
 			if (args.Length < 3)
 				throw new UserException($"Not enough arguments ({args.Length}).");
@@ -91,7 +83,7 @@ namespace WeatherFetch
 			if (hasEndDate && !(Regex.IsMatch(options["-t"], @"\d{4}-\d{2}-\d{2}") && DateTime.TryParse(options["-t"], out _)))
 				throw new UserException($"Invalid value for <end_date>: {args[2]}");
 
-			var history = Api.GetHistory(
+			var history = config.GetWeatherApi().GetHistory(
 				args[1], // location
 				args[2], // (start) date
 				hasEndDate ? options["-t"] : null, // end date (null if none)
@@ -120,6 +112,7 @@ namespace WeatherFetch
 			}
 
 			// TODO: alerts
+			// UPDATE: or rather not
 
 			return sb.ToString();
 		}
